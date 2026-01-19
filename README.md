@@ -39,15 +39,6 @@ venv\Scripts\activate     # Windows
 pip install -r requirements.txt
 ```
 
-### 4. Download NLTK data
-
-This project uses NLTK tokenization, which requires downloading some extra data once:
-
-```python
-import nltk
-nltk.download("punkt")
-```
-
 ---
 
 ## OpenAI API Key
