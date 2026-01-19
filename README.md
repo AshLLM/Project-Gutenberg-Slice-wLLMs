@@ -1,10 +1,10 @@
 # Slicing Text with LLMs
 
-This project demonstrates how to slice and process text using Python and an LLM (OpenAI API), with basic natural language processing using NLTK. It is implemented as a Jupyter Notebook and is intended as a beginner-friendly example.
+This is a small Python / Jupyter project where I experiment with slicing and processing text using an LLM (OpenAI API) and some basic NLP tools from NLTK. The notebook is mainly meant as a learning project and a reference for future experiments.
 
 ---
 
-## 📁 Project Structure
+## Project Files
 
 ```text
 .
@@ -16,20 +16,20 @@ This project demonstrates how to slice and process text using Python and an LLM 
 
 ---
 
-## ⚙️ Setup Instructions
+## Setup
 
-### 1. Clone the repository
+### 1. Clone the repo
 
 ```bash
 git clone <your-repo-url>
 cd <your-repo-name>
 ```
 
-### 2. Create a virtual environment (recommended)
+### 2. (Optional but recommended) Create a virtual environment
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # macOS/Linux
+source venv/bin/activate  # macOS / Linux
 venv\Scripts\activate     # Windows
 ```
 
@@ -39,53 +39,52 @@ venv\Scripts\activate     # Windows
 pip install -r requirements.txt
 ```
 
-### 4. Download required NLTK data
+### 4. Download NLTK data
 
-This project uses NLTK's tokenizer, which requires an additional download:
+This project uses NLTK tokenization, which requires downloading some extra data once:
 
 ```python
 import nltk
 nltk.download("punkt")
 ```
 
-You only need to do this once.
-
 ---
 
-## OpenAI API Key Setup
+## OpenAI API Key
 
-This project uses the OpenAI API. **Do not hardcode your API key.**
+The notebook uses the OpenAI API. The API key is **not** included in the code.
 
-Create a `.env` file in the project root with the following content:
+Create a `.env` file in the project root and add:
 
 ```env
 OPENAI_API_KEY=your_api_key_here
 ```
 
-The notebook loads this key using `python-dotenv`. The `.env` file is ignored by Git and should never be committed.
+The notebook loads this using `python-dotenv`. The `.env` file is ignored by Git and should not be committed.
 
 ---
 
 ## Running the Notebook
 
-After completing the setup steps above, launch Jupyter:
+After setup, start Jupyter:
 
 ```bash
 jupyter notebook
 ```
 
-Then open `slicing_text_llm.ipynb` and run the cells in order.
+Open `slicing_text_llm.ipynb` and run the cells in order.
 
 ---
 
 ## Notes
 
-* This project is intended for learning and experimentation.
-* API usage may incur costs depending on your OpenAI account.
-* Make sure your API key remains private.
+* This is a learning project, not a production-ready application.
+* Running the notebook will make API calls that may cost money depending on your OpenAI plan.
+* Make sure your API key stays private.
 
 ---
 
-## 📄 License
+## License
 
-This project is provided for educational purposes. Add a license if you plan to share or reuse it publicly.
+No license has been added yet. Feel free to use this code for learning or personal projects.
+
