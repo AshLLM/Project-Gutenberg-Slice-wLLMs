@@ -84,4 +84,3 @@ Open `slicing_text_llm.ipynb` and run the cells in order.
 ## License
 
 No license has been added yet. Feel free to use this code for learning or personal projects.
-
