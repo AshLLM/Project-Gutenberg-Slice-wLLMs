@@ -45,10 +45,16 @@ pip install -r requirements.txt
 
 The notebook uses the OpenAI API. The API key is **not** included in the code.
 
-Create a `.env` file in the project root and add:
+Copy the provided `.env.example` file to `.env` and add your actual API key:
+
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` and replace `your_api_key_here` with your actual OpenAI API key:
 
 ```env
-OPENAI_API_KEY=your_api_key_here
+OPENAI_API_KEY=sk-...
 ```
 
 The notebook loads this using `python-dotenv`. The `.env` file is ignored by Git and should not be committed.
