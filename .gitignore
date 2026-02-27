@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Environment / secrets
+OPENAI_KEY.env
+.env
+
+# Generated outputs
+core_txts/
+metadata/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
