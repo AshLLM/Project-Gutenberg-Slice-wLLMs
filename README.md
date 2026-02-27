@@ -75,4 +75,4 @@ gutenberg_url = "https://www.gutenberg.org/ebooks/84"  # Frankenstein
 
 - Each run makes 6 OpenAI API calls, so it'll cost a small amount depending on your plan.
 - `helper.py` can be imported into other notebooks if you want to reuse the utilities.
-- Learning/portfolio project — not production-ready.
+- This is a learning/portfolio project for demo purposes — not production ready.
