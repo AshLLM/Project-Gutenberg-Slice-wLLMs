@@ -52,39 +52,6 @@ def _clean_text(s: Optional[str]) -> str:
     return re.sub(r"\s+", " ", s).strip()
 
 
-def _choose_genre(subjects: List[str]) -> str:
-    """Return a single genre-like label from a list of subjects.
-
-    Scans for common genre keywords; falls back to the first short subject.
-    """
-    if not subjects:
-        return ""
-    genre_keywords = [
-        "fiction",
-        "novel",
-        "poetry",
-        "drama",
-        "science fiction",
-        "fantasy",
-        "mystery",
-        "detective",
-        "horror",
-        "romance",
-        "children",
-        "biography",
-        "historical",
-        "adventure",
-        "satire",
-    ]
-    lowered = [s.lower() for s in subjects]
-    for kw in genre_keywords:
-        for s in lowered:
-            if kw in s:
-                return subjects[lowered.index(s)]
-    short_subjects = [s for s in subjects if len(s.split()) <= 4]
-    return short_subjects[0] if short_subjects else subjects[0]
-
-
 def _extract_ebook_id(url: str) -> Optional[str]:
     """Pull the numeric ebook ID from a Gutenberg URL.
 
@@ -125,7 +92,6 @@ def _empty_metadata(url: str, error: str) -> Dict[str, Optional[str]]:
         "publication_date": None,
         "ebook_no": None,
         "subjects": None,
-        "genre": None,
         "source_url": url,
         "error": error,
     }
@@ -135,7 +101,7 @@ def fetch_metadata(ebook_url: str) -> Dict[str, Optional[str]]:
     """Scrape a Gutenberg ebook page and return a metadata dict.
 
     Keys: title, author, language, publication_date, ebook_no,
-          subjects (list), genre, source_url.
+          subjects (list), source_url.
     An 'error' key is added if something goes wrong, rather than raising.
     """
     try:
@@ -193,7 +159,6 @@ def fetch_metadata(ebook_url: str) -> Dict[str, Optional[str]]:
         "publication_date": publication_date or None,
         "ebook_no": ebook_no or None,
         "subjects": subjects or None,
-        "genre": _choose_genre(subjects) or None,
         "source_url": ebook_url,
     }
 
