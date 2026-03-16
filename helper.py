@@ -16,7 +16,6 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import requests
-from bs4 import BeautifulSoup
 from dotenv import find_dotenv, load_dotenv
 import openai
 
