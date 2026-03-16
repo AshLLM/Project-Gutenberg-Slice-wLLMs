@@ -28,7 +28,7 @@ def parse_ebook_ids(user_input: str) -> list[str]:
 def _start_mapper_prompt(head: str, title: str = "") -> str:
     title_context = ""
     if title:
-        title_context = f"\n<context>\nThe work's title is: \"{title}\"\n</context>\n"
+        title_context = f'\n<context>\nThe work\'s title is: "{title}"\n</context>\n'
     return f"""
 <task_objective>
 Decompose the text into **Structural Segments**.
@@ -190,11 +190,10 @@ TEXT:
 
 def process_ebook(client, ebook_id: str) -> dict:
     """Run the full pipeline for one ebook. Returns a result dict."""
-    gutenberg_url = f"https://www.gutenberg.org/ebooks/{ebook_id}"
 
     # 1 · Metadata
     print("  [1/4] Fetching metadata...", end="", flush=True)
-    meta = fetch_metadata(gutenberg_url)
+    meta = fetch_metadata(ebook_id)
     if meta.get("error"):
         return {"ebook_id": ebook_id, "status": "error", "error": meta["error"]}
     save_metadata(meta, output_dir="metadata")

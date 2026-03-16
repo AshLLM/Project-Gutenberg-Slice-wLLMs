@@ -83,7 +83,7 @@ def _extract_publication_date(summary_text: str) -> Optional[str]:
 # ---------------------------------------------------------------------------
 
 
-def _empty_metadata(url: str, error: str) -> dict:
+def _empty_metadata(ebook: str, error: str) -> dict:
     """Return a metadata dict with all fields set to None and an error message."""
     return {
         "id": None,
@@ -109,74 +109,64 @@ def _empty_metadata(url: str, error: str) -> dict:
         "summary": None,
         "summary_is_unverified": None,
         "plain_text_url": None,
-        "source_url": url,
         "error": error,
     }
 
 
-def fetch_metadata(ebook_url: str) -> Dict[str, Optional[str]]:
-    """Scrape a Gutenberg ebook page and return a metadata dict.
+def fetch_metadata(ebook_id: str) -> dict:
+    """Fetch metadata from the Gutendex API for a given Gutenberg ebook ID.
 
-    Keys: title, author, language, publication_date, ebook_no,
-          subjects (list), source_url.
-    An 'error' key is added if something goes wrong, rather than raising.
+    Returns a sidecar-ready metadata dict.
+    An 'error' key is present only if something went wrong.
     """
+    gutendex_url = f"https://gutendex.com/books/{ebook_id}"
     try:
-        resp = requests.get(ebook_url, timeout=15)
+        resp = requests.get(gutendex_url, timeout=15)
         resp.raise_for_status()
+        data = resp.json()
     except requests.exceptions.RequestException as e:
-        return _empty_metadata(ebook_url, str(e))
+        return _empty_metadata(ebook_id, str(e))
 
-    soup = BeautifulSoup(resp.text, "html.parser")
+    # -- Basic fields
+    authors = data.get("authors", [])
+    editors = data.get("editors", [])
+    translators = data.get("translators", [])
+    summaries = data.get("summaries", [])
+    is_translation = len(translators) > 0
 
-    title = author = language = publication_date = ebook_no = None
-    subjects = []
+    # -- Plain text URL (UTF-8 preferred)
+    formats = data.get("formats", {})
+    plain_text_url = formats.get("text/plain; charset=utf-8")
 
-    table = soup.find("table", id="about_book_table")
-    if not table:
-        return _empty_metadata(
-            ebook_url,
-            "Bibliographic table not found; page structure may be non-standard",
-        )
-
-    for tr in table.find_all("tr"):
-        th = tr.find("th")
-        td = tr.find("td")
-        if not th or not td:
-            continue
-        label = _clean_text(th.get_text()).lower()
-        value_text = _clean_text(td.get_text())
-
-        if label == "author":
-            author = re.sub(r",\s*\d{4}-\d{4}$", "", value_text).strip()
-        elif label == "title":
-            parts = [_clean_text(s) for s in td.stripped_strings]
-            title = [p for p in parts if p] or [value_text]
-        elif label == "language":
-            language = value_text
-        elif label == "ebook-no.":
-            ebook_no = value_text
-        elif label == "subject":
-            link = td.find("a", class_="block")
-            if link:
-                subjects.append(_clean_text(link.get_text()))
-
-    # Deduplicate subjects, preserving insertion order
-    subjects = list(dict.fromkeys(subjects))
-
-    if not publication_date:
-        summary_div = soup.find("div", class_="summary-text-container")
-        if summary_div:
-            publication_date = _extract_publication_date(summary_div.get_text())
+    # -- Publication date (Phase 2 upgrades this)
+    summary_text = summaries[0] if summaries else ""
+    raw_year = _extract_publication_date(summary_text)
+    pub_year = int(raw_year) if raw_year else None
 
     return {
-        "title": title if title else None,
-        "author": author or None,
-        "language": language or None,
-        "publication_date": publication_date or None,
-        "ebook_no": ebook_no or None,
-        "subjects": subjects or None,
-        "source_url": ebook_url,
+        "id": data.get("id"),
+        "title": data.get("title"),
+        "authors": authors,
+        "editors": editors,
+        "translators": translators,
+        "is_translation": is_translation,
+        "languages": data.get("languages", []),
+        "subjects": data.get("subjects", []),
+        "bookshelves": data.get("bookshelves", []),
+        "copyright": data.get("copyright"),
+        "publication_year_start": pub_year,
+        "publication_year_end": None,
+        "publication_year_source": "summary_regex" if pub_year else None,
+        "publication_year_confidence": "high" if pub_year else None,
+        "composition_year_start": None,
+        "composition_year_end": None,
+        "composition_year_source": None,
+        "composition_year_confidence": None,
+        "translation_year": None,
+        "translation_year_source": None,
+        "summary": summary_text or None,
+        "summary_is_unverified": True if summary_text else None,
+        "plain_text_url": plain_text_url,
     }
 
 
